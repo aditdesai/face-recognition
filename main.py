@@ -18,9 +18,7 @@ import pandas as pd
 from database import get_database
 
 model = load_model("facenet_keras.h5")
-
 database = get_database()
-
 attendance = {"Student Name" : [], "P/A" : []}
 
 cap = cv2.VideoCapture(0)
@@ -29,18 +27,23 @@ while True:
     if keyboard.is_pressed("q"):
         break
     
-    try:
-        success, img = cap.read()
-        if success:
-            pil_image = PIL.Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-            extracted_image = extract_image(pil_image)
+    success, img = cap.read()
+    if success:
+        pil_image = PIL.Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        extracted_image = extract_image(pil_image) # None if no face detected
+        if extracted_image:
             succ, identity = recognize(extracted_image, database, model)
 
             if succ and identity not in attendance["Student Name"]:
                 attendance["Student Name"].append(identity)
                 attendance["P/A"].append('P')
-    except:
-        pass
+    
+
+for iden in database.keys():
+    if iden not in attendance["Student Name"]:
+        attendance["Student Name"].append(iden)
+        attendance["P/A"].append('A')
+
 
 pd.DataFrame(attendance).to_excel("attendance.xlsx")
     

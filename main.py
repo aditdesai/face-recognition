@@ -15,22 +15,11 @@ import PIL
 from face_cropping import extract_image
 import keyboard
 import pandas as pd
+from database import get_database
 
 model = load_model("facenet_keras.h5")
 
-database = {}
-database["danielle"] = img_to_encoding(tf.keras.utils.load_img("images/danielle.png"), model)
-database["younes"] = img_to_encoding(tf.keras.utils.load_img("images/younes.jpg"), model)
-database["tian"] = img_to_encoding(tf.keras.utils.load_img("images/tian.jpg"), model)
-database["andrew"] = img_to_encoding(tf.keras.utils.load_img("images/andrew.jpg"), model)
-database["kian"] = img_to_encoding(tf.keras.utils.load_img("images/kian.jpg"), model)
-database["sebastiano"] = img_to_encoding(tf.keras.utils.load_img("images/sebastiano.jpg"), model)
-database["bertrand"] = img_to_encoding(tf.keras.utils.load_img("images/bertrand.jpg"), model)
-database["kevin"] = img_to_encoding(tf.keras.utils.load_img("images/kevin.jpg"), model)
-database["felix"] = img_to_encoding(tf.keras.utils.load_img("images/felix.jpg"), model)
-database["benoit"] = img_to_encoding(tf.keras.utils.load_img("images/benoit.jpg"), model)
-database["arnaud"] = img_to_encoding(tf.keras.utils.load_img("images/arnaud.jpg"), model)
-database["adit"] = img_to_encoding(tf.keras.utils.load_img("images/adit.jpg"), model)
+database = get_database()
 
 attendance = {"Student Name" : [], "P/A" : []}
 

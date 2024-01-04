@@ -13,7 +13,8 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import PIL
 from face_cropping import extract_image
-
+import keyboard
+import pandas as pd
 
 model = load_model("facenet_keras.h5")
 
@@ -31,11 +32,26 @@ database["benoit"] = img_to_encoding(tf.keras.utils.load_img("images/benoit.jpg"
 database["arnaud"] = img_to_encoding(tf.keras.utils.load_img("images/arnaud.jpg"), model)
 database["adit"] = img_to_encoding(tf.keras.utils.load_img("images/adit.jpg"), model)
 
+attendance = {"Student Name" : [], "P/A" : []}
+
 cap = cv2.VideoCapture(0)
 
 while True:
-    success, img = cap.read()
-    if success:
-        pil_image = PIL.Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        extracted_image = extract_image(pil_image)
-        succ, identity = recognize(extracted_image, database, model)
+    if keyboard.is_pressed("q"):
+        break
+    
+    try:
+        success, img = cap.read()
+        if success:
+            pil_image = PIL.Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            extracted_image = extract_image(pil_image)
+            succ, identity = recognize(extracted_image, database, model)
+
+            if succ and identity not in attendance["Student Name"]:
+                attendance["Student Name"].append(identity)
+                attendance["P/A"].append('P')
+    except:
+        pass
+
+pd.DataFrame(attendance).to_excel("attendance.xlsx")
+    
